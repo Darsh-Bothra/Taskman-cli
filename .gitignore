@@ -1,0 +1,17 @@
+# Build output
+/bin/
+
+# Test coverage
+coverage.out
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Local task file (don't commit personal tasks!)
+*.taskman.json
