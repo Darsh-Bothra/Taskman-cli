@@ -1,6 +1,7 @@
 BINARY   := taskman
 BUILD_DIR := ./bin
 MAIN     := ./main.go
+GOBIN    := $(shell go env GOPATH)/bin
 
 .PHONY: all build run test lint clean install
 
@@ -14,7 +15,13 @@ build:
 
 ## install: install the binary to GOPATH/bin
 install:
-	go install $(MAIN)
+	@#region agent log
+	@bash -c 'ts=$$(date +%s%3N 2>/dev/null || date +%s); echo "{\"sessionId\":\"a57069\",\"runId\":\"verify\",\"hypothesisId\":\"A\",\"location\":\"Makefile:install\",\"message\":\"install target invoked\",\"data\":{\"gopath\":\"$$(go env GOPATH)\"},\"timestamp\":$$ts}" >> .cursor/debug-a57069.log'
+	@#endregion
+	go build -ldflags="-s -w" -o $(GOBIN)/$(BINARY) $(MAIN)
+	@#region agent log
+	@bash -c 'ts=$$(date +%s%3N 2>/dev/null || date +%s); bin="$$(go env GOPATH)/bin/taskman"; ex=false; [ -f "$$bin" ] && ex=true; echo "{\"sessionId\":\"a57069\",\"runId\":\"verify\",\"hypothesisId\":\"E\",\"location\":\"Makefile:install\",\"message\":\"install finished\",\"data\":{\"binary\":\"$$bin\",\"exists\":$$ex},\"timestamp\":$$ts}" >> .cursor/debug-a57069.log'
+	@#endregion
 
 ## run: build and run with optional ARGS (e.g. make run ARGS="list --all")
 run: build
